@@ -4,12 +4,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['new_test'])){
     	session_start();
 		$_SESSION['quiz_code'] = $_POST['code'];
+		$_SESSION['quiz_title'] = $_POST['title'];
 		$quizes = R::dispense('quizes');
 		$quizes->title = $_POST['title'];
 		$quizes->email = $_SESSION['email'];
 		$quizes->size = 0;
-		$quizes->from = date('Y-m-d H:i:s');
-		$quizes->to = date('Y-m-d H:i:s');
+		//$quizes->from = date('Y-m-d H:i:s');
+		$quizes->status = 1;
 		$quizes->code  = $_POST['code'];
 		R::store($quizes);
 		header('Location: question.php');
@@ -29,7 +30,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 <body>
-<div class="container">
+<div class="container main-area">
 	<div class="row">
 		<div class="col-md-12 col-sm-12 main-header">	
 			<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
@@ -46,7 +47,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		</div>
 		<div class="col-md-10 col-md-offset-1 block-main">
 			<div class="col-md-4 col-md-offset-4 main-menu">
-				<a href="" class="success-btn"> Новый тест </a>	
+				<h2> Новый тест </h2>	
 				<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
 					<label>
 						<input type="text" pattern="[A-Za-zА-Яа-яЁё-s]"  name="title" class="form-control" placeholder="Enter a Quiz Title" required>

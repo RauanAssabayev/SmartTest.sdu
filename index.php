@@ -50,7 +50,7 @@ function test_input($data) {
 </head>
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 <body>
-<div class="container">
+<div class="container main-area">
 	<div class="row">
 		<div class="col-md-12 col-sm-12 header">	
 			<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">

@@ -1,17 +1,13 @@
 <?
 require "db.php";
-if(empty($number)){
-			$number = 1;
-}
+session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-	if(isset($_POST['questions'])){
-		session_start();
+	if(isset($_POST['save'])){
 		$number = $_POST["iterator"];
 		if(empty($number)){
 			$number = 1;
 		}
 		$questions = R::dispense('questions');
-		$questions->number = $number++;
 		$questions->question = $_POST['question'];
 		$questions->quiz_code = $_SESSION['quiz_code'];
 		$questions->a = $_POST['a'];
@@ -19,7 +15,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		$questions->c = $_POST['c'];
 		$questions->d = $_POST['d'];
 		$questions->correct = $_POST['correct'];
+		$sql = "UPDATE quizes SET size = ".$number++." WHERE code = '".$_SESSION['quiz_code']."'"; 
+		R::exec($sql);
 		R::store($questions);
+		header('Location: questions.php');
+	}
+
+}
+if($_SERVER["REQUEST_METHOD"] == "GET") {
+	if(isset($_GET['nbr'])){
+		$number = $_GET["nbr"];
+		if(empty($number)){
+			$number = 1;
+		}
 	}
 }
 
@@ -47,7 +55,7 @@ function test_input($data) {
 </head>
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 <body>
-<div class="container">
+<div class="container main-area">
 	<div class="row">
 		<div class="col-md-12 col-sm-12 main-header">	
 			<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
@@ -65,7 +73,7 @@ function test_input($data) {
 		<div class="question-block">
 			<form action="" method="POST">
 				<div class="question row">
-					<p class="col-md-4"> Question № <?=$number ?> (required) </p>
+					<p class="col-md-4"> Question №<?=$number ?> (required) </p>
 				</div> 
 				<div class="question row">
 					<input class="col-md-6" id="question" placeholder="" type="text" name="question">
@@ -81,17 +89,8 @@ function test_input($data) {
 					<i id="d" class="fa fa-chevron-circle-down col-md-1" aria-hidden="true"></i>
 					<input type="hidden" id="correct" name="correct" value="a" >
 					<input type="hidden" id="iterator" name="iterator" value=<?="\"".$number."\""?> >
-					<div class="btn-action next col-md-1 col-md-offset-1"> 
-						<input type="submit" name="questions" value="NEXT">
-					</div>
-				</div>
-			</form>
-			<form action="" method="POST">
-				<div class="row">
-					<input type="hidden" name="code" value=<?="\"".$_SESSION['quiz_code']."\""?> >
-					<input type="hidden" name="size" value=<?="\"".$number."\""?> >
-					<div class="log-btn btn-action finish col-md-2 col-sm-2 col-md-offset-5 col-sm-offset-6"> 
-						<input type="submit" name="questions" value="FINISH">
+					<div class="btn-action next col-md-1 col-md-offset-1 " id="savediv"> 
+						<input type="submit" name="save" id="save" value="SAVE">
 					</div>
 				</div>
 			</form>
@@ -120,6 +119,8 @@ function test_input($data) {
 	        $("#correct").val("d");
 	    });
 	    function clear(){
+	    	$("#save").css("display","block");
+	    	$("#savediv").css("display","block");
 	    	$("#a,#b,#c,#d").css("color","black");
 	    }
 	});
