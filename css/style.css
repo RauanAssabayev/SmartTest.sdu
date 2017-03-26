@@ -11,7 +11,7 @@ body{
     list-style: none;
 }
 .log-btn{
-    margin-top: 20px;
+    margin-top: 15px;
     height: 50px;
     line-height: 50px;
     background-color: #36a0e8;
@@ -149,6 +149,15 @@ body{
     -o-transition: border .25s linear,color .25s linear,background-color .25s linear;
     transition: border .25s linear,color .25s linear,background-color .25s linear;
 }
+#close{
+    color: black;
+}
+.pass-status{
+    text-align: center;
+    color: green;
+    margin-top: 30px;
+}
+
 .btn-primary {
     width: 218px;
     color: #fff;
@@ -182,6 +191,13 @@ label {
     top: 50px;
     z-index: 1000;
     opacity: 1 !important;
+}
+.sign-block i{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    font-size: 15px;
 }
 .full{
     position: absolute;
@@ -264,15 +280,20 @@ label {
     margin: 3px !important;
     text-align: center;
 }
-.question-block input{
+.question-block>form>.row>input{
     height: 50px;
     border: black solid 1px;
     margin-top: 10px;
+    margin-left: 10px;
     color: black;
     border-radius: 10px;
 }
+.question-block>form>.row>i{
+    color: black;
+    text-align: left;
+}
 .question p,input{
-    margin-left: 40px !important;
+    margin-left: 40px;
     padding: 0px;
     margin-bottom: 5px;
     font-family: "Montserrat","Helvetica Neue",helvetica,arial,sans-serif;
@@ -288,8 +309,73 @@ label {
 .next{
     background-color: #34495E;
     margin-top: 40px;
+    padding: 10px;
+    margin-right: 10px;
+}
+.prof>h3{
+    color: white;
+    margin-top: 25px;
+    display: inline-block;
+    cursor: pointer;
+    float:left;
+}
+.prof ul{
+    margin-top: 15px;
 }
 
+.profile{
+    margin-top: 15px;
+    color: #fff;
+    background-color: #1abc9c;
+    float: right;
+}
+.profile span,i{
+    text-align: center;
+    font-size: 18px;
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+}
+.prof{
+    display: inline-block;
+    padding: 10px 10px;
+}
+.profile a:hover{
+    text-decoration: none;
+}
+#signout{
+   background-color: #333;
+}
+#signout>a{
+   background-color: #333;
+   color: white;
+}
+.profile>ul{
+    text-align: center;
+    width: 100%;
+    list-style: none;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    display: inline-block;
+    padding: 0px;
+    z-index: 1000000;
+    position: relative;
+    display: block;
+    margin: 0px;
+    color: #34495e;
+    border: 2px solid transparent;
+    font-size: 16px;
+    line-height: 1.625;
+}
+.profile li{
+    border-top: 1px white solid;
+    height: 40px;
+    line-height:40px;
+    display: block;
+}
+.profile>ul>li>a{
+    color: #34495e;
+}
 .question-block i:hover{
     color: white;
 }
@@ -452,4 +538,78 @@ input:checked + .slider:before {
     margin-left: auto;
     margin-right: auto;
     display: block;
+}
+
+.nl{
+    display: inline-block;
+    background-color: white;
+    border-radius: 25px;
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.question-list{
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.edit label>div>p{
+    margin: 0px !important;
+    display: block;
+    text-align: center;
+}
+.questions-item>i{
+    color:black;
+}
+.question-content{
+    border-top: dotted 1px #333;
+    border-bottom: dotted 1px #333;
+    background-color: #e6e6e6;
+    border-radius: 10px;
+}
+.question-content h3{
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1.1em;
+    padding-top: 5px;
+}
+.question-content h4{
+    text-align: left;
+    font-weight: normal;
+    font-size: 1.1em;
+    padding-top: 5px;
+}
+.question-content input[type=radio]{
+    margin-left: 30px;
+    margin-top: 10px;
+    margin-right: 10px;
+    float: left;
+}
+.answer-item{
+    display: block;
+}
+.active{
+    background-color: green;
+    color: white;
+}
+.checked{
+    background-color: gray;
+}
+.fin-btn{
+    display: inline-block;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #34495e;
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px;
+    margin-top: 30px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
 }

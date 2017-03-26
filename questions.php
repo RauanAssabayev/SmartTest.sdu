@@ -6,6 +6,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		header('Location: questions.php');
 	}
 }
+if($_SERVER["REQUEST_METHOD"] == "GET"){
+	if(isset($_GET['logout'])){
+		session_destroy();
+		session_unset();
+		header('Location: index.php');
+	}
+}
 
 function test_input($data) {
 	$data = trim($data);
@@ -34,15 +41,21 @@ function test_input($data) {
 <div class="container main-area">
 	<div class="row">
 		<div class="col-md-12 col-sm-12 main-header">	
-			<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
-			<!--<ul class="main-menu col-md-6">
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-			</ul> -->
-			<div class="log-btn btn-action finish col-md-1 col-sm-2 col-md-offset-8 col-sm-offset-6"> 
-					<input type="submit" value="Выйти">
+			<a href="main.php">	
+				<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
+			</a>
+			<div class="profile">
+				<a class="prof" href="#">
+					<i class="fa fa-address-card" aria-hidden="true"></i>
+					<span> <?=$_SESSION['auth_user'] ?> </span>
+					<i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+				</a>
+				<ul style="display: none;" id="actions-list">
+					<li> <a href="editprofile.php" > Edit profile </a> </li>
+					<li> <a href="myresults.php" >  My Results </a> </li>
+					<li> <a href="myquizes.php">  My Quizes </a> </li>
+					<li id='signout'> <a href="?logout=1" >  Sign Out </a> </li>
+				</ul>
 			</div>
 		</div>
 	</div>
@@ -57,8 +70,6 @@ function test_input($data) {
 					  <div class="slider round "></div>
 					</label>
 				</div>
-				
-				
 				<?
 				$sql = "select * from questions where quiz_code = '".$_SESSION['quiz_code']."'";
 				$result = R::getAll($sql);
@@ -109,6 +120,11 @@ function test_input($data) {
             		});
 	        }     
     	});
+		$(document).ready(function(){
+		    $(".profile").click(function(){
+		        $("#actions-list").slideToggle('fast','swing');
+		    });
+		});
 	});
 	</script>
 </body>

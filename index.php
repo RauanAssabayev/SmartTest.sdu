@@ -1,6 +1,5 @@
 <?
 require "db.php";
-
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['login'])){
     	$loginsql = "select * from users where email = '".$_POST['email']."'
@@ -9,8 +8,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	    if($user){
 	    	session_start();
 			$_SESSION['email'] = $_POST['email'];
-			//header('Location: main.php');
-			include('main.php');
+			$_SESSION['auth_user'] = $user[0]['name'];
+			header('Location: main.php');
 		}
 	}
 	if(isset($_POST['reg'])){
@@ -27,7 +26,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		}
 	}
 }
-
 function test_input($data) {
 	$data = trim($data);
 	$data = stripslashes($data);
@@ -35,8 +33,6 @@ function test_input($data) {
 	return $data;
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,6 +43,7 @@ function test_input($data) {
 	<link rel="stylesheet" href="css/media.css">
 	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 <body>
@@ -129,7 +126,8 @@ function test_input($data) {
 </div>
 <div class="reg-block sign-block">
 		<div class="vertical-item_1-form">
-			<h2 class="item-title">Вход</h2>
+			<h2 class="item-title">Вход</h2> 
+			<i  id="close" class="fa fa-times" aria-hidden="true"></i>
 			<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" accept-charset="UTF-8">
 			<label>
 				<div>Электронная почта</div>
@@ -143,13 +141,40 @@ function test_input($data) {
 			</form>
 		</div>
 	</div>
-
 <script>
 $(document).ready(function(){
     $("#signup").click(function(){
         $(".full").toggle();
         $(".sign-block").toggle();
     });
+    $("#close").click(function(){
+        $(".full").toggle();
+        $(".sign-block").toggle();
+    });
+
+
+    // $(document).keypress(function(e) {
+	//     console.log(e.which);
+	// });
+	// $(document).ready(function(){
+	//     $("body").click(function(){
+	//         console.log('mouse');
+	//         console.log(history.length);
+	//     });
+	// });
+	var isActive;
+	window.onfocus = function () { 
+	  isActive = true; 
+	}; 
+	window.onblur = function () { 
+	  isActive = false; 
+	}; 
+	setInterval(function () { 
+	  console.log(window.isActive ? 'active' : 'inactive'); 
+	}, 1000);
+
+
+
 });
 </script>
 </body>

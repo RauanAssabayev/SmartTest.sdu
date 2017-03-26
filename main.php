@@ -1,3 +1,40 @@
+<?
+require "db.php";
+session_start();
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+	if(isset($_POST['newtest'])){
+		$sql = "SELECT * from quizes where code = '".$_POST['quiz-code']."'";
+		$quiz = R::getAll($sql);
+		if($quiz){
+			if($quiz[0]['status'] == 1){
+				$_SESSION['code'] = $quiz[0]['code'];
+				$passquiz = R::dispense('passquiz');
+				$passquiz->quiz_code = $_POST['quiz-code'];
+				$passquiz->email = $_SESSION['email'];
+				$passquiz->name = $_SESSION['auth_user'];
+				$passquiz->correct = 0;
+				$passquiz->incorrect = 0;
+				$passquiz->penalty = 0;
+				$passquiz->status = 0;
+				R::store($passquiz);
+				header('Location: quiztime.php');
+			}
+			else{
+				echo '<script> alert("Quiz disabled"); </script>';
+			}
+		}else{
+			echo '<script> alert("CHEKCK CODE"); </script>';
+		}
+	}
+}
+if($_SERVER["REQUEST_METHOD"] == "GET"){
+	if(isset($_GET['logout'])){
+		session_destroy();
+		session_unset();
+		header('Location: index.php');
+	}
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,34 +45,39 @@
 	<link rel="stylesheet" href="css/media.css">
 	<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 <body>
 <div class="container main-area">
 	<div class="row">
 		<div class="col-md-12 col-sm-12 main-header">	
-			<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
-			<!--<ul class="main-menu col-md-6">
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-			</ul> -->
-			<div class="log-btn col-md-1 col-sm-2 
-			col-md-offset-8 col-sm-offset-6"> 
-				<a id="signup"> Войти </a>
+			<a href="main.php">	
+				<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
+			</a>
+			<div class="profile">
+				<a class="prof" href="#">
+					<i class="fa fa-address-card" aria-hidden="true"></i>
+					<span> <?=$_SESSION['auth_user']?> </span>
+					<i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+				</a>
+				<ul style="display: none;" id="actions-list">
+					<li> <a href="editprofile.php"> Edit profile </a> </li>
+					<li> <a href="myresults.php">  My Results </a> </li>
+					<li> <a href="myquizes.php">  My Quizes </a> </li>
+					<li id='signout'> <a href="?logout=1" >  Sign Out </a> </li>
+				</ul>
 			</div>
 		</div>
 		<div class="col-md-10 col-md-offset-1 block-main">
 			<div class="col-md-4 col-md-offset-4 main-menu">
 				<a href="newtest.php" class="success-btn"> Создать тест </a>
 				<br> <br>
-				<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+				<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
 					<label>
-						<input type="text" pattern="[A-Za-zА-Яа-яЁё-s]"  name="name" class="form-control" placeholder="Код">
+						<input type="text" pattern="[A-Za-zА-Яа-яЁё-s]"  name="quiz-code" class="form-control" placeholder="Код">
 					</label>
-
-					<button type="submit" name="reg" class="btn btn-primary">Начать тест</button>
+					<button type="submit" name="newtest" class="btn btn-primary">Начать тест</button>
 				</form>
 				
 			</div>
@@ -44,36 +86,17 @@
 		</div>	
 	</div>
 </div>
-<div class="full">
-	
+<div class="full">	
 </div>
 
 
 <script>
-	// $(document).keypress(function(e) {
-	//     console.log(e.which);
-	// });
-	// $(document).ready(function(){
-	//     $("body").click(function(){
-	//         console.log('mouse');
-	//         console.log(history.length);
-	//     });
-	// });
-	var isActive;
-	window.onfocus = function () { 
-	  isActive = true; 
-	}; 
-	window.onblur = function () { 
-	  isActive = false; 
-	}; 
-	setInterval(function () { 
-	  console.log(window.isActive ? 'active' : 'inactive'); 
-	}, 1000);
-			
-	
+$(document).ready(function(){
+    $(".profile").click(function(){
+        $("#actions-list").slideToggle('fast','swing');
+    });
+});
 </script>
-
-
 
 </body>
 </html>

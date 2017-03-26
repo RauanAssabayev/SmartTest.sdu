@@ -8,6 +8,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$number = 1;
 		}
 		$questions = R::dispense('questions');
+		$questions->number = $number;
 		$questions->question = $_POST['question'];
 		$questions->quiz_code = $_SESSION['quiz_code'];
 		$questions->a = $_POST['a'];
@@ -28,6 +29,11 @@ if($_SERVER["REQUEST_METHOD"] == "GET") {
 		if(empty($number)){
 			$number = 1;
 		}
+	}
+	if(isset($_GET['logout'])){
+		session_destroy();
+		session_unset();
+		header('Location: index.php');
 	}
 }
 
@@ -58,30 +64,37 @@ function test_input($data) {
 <div class="container main-area">
 	<div class="row">
 		<div class="col-md-12 col-sm-12 main-header">	
-			<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
-			<!--<ul class="main-menu col-md-6">
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-				<li class="col-md-1">Тесты</li>
-			</ul> -->
-			<div class="log-btn btn-action finish col-md-1 col-sm-2 col-md-offset-8 col-sm-offset-6"> 
-					<input type="submit" value="Выйти">
+			<a href="main.php">	
+				<img src="img/logo.png" alt="" class="col-md-3 col-sm-4">
+			</a>
+			<div class="profile">
+				<a class="prof" href="#">
+					<i class="fa fa-address-card" aria-hidden="true"></i>
+					<span> <?=$_SESSION['auth_user'] ?> </span>
+					<i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+				</a>
+				<ul style="display: none;" id="actions-list">
+					<li> <a href="editprofile.php" > Edit profile </a> </li>
+					<li> <a href="myresults.php" >  My Results </a> </li>
+					<li> <a href="myquizes.php">  My Quizes </a> </li>
+					<li id='signout'> <a href="?logout=1" >  Sign Out </a> </li>
+				</ul>
 			</div>
 		</div>
 	</div>
 		<div class="question-block">
 			<form action="" method="POST">
 				<div class="question row">
+					<? if(empty($number))$number = 1; ?>
 					<p class="col-md-4"> Question №<?=$number ?> (required) </p>
 				</div> 
 				<div class="question row">
 					<input class="col-md-6" id="question" placeholder="" type="text" name="question">
 				</div>
 				<div class="row">
-					<input type="text" placeholder="Answer1(required)" class="col-md-4" name="a">
+					<input type="text" placeholder="Answer1(required)" class="col-md-4" name="a" required>
 					<i id="a" class="fa fa-chevron-circle-down col-md-1" aria-hidden="true"></i>
-					<input type="text" placeholder="Answer2(required)" class="col-md-4" name="b">
+					<input type="text" placeholder="Answer2(required)" class="col-md-4" name="b" required>
 					<i id="b" class="fa fa-chevron-circle-down col-md-1" aria-hidden="true"></i>
 					<input type="text" placeholder="Answer3" class="col-md-4" name="c">
 					<i id="c" class="fa fa-chevron-circle-down col-md-1" aria-hidden="true"></i>
@@ -89,7 +102,7 @@ function test_input($data) {
 					<i id="d" class="fa fa-chevron-circle-down col-md-1" aria-hidden="true"></i>
 					<input type="hidden" id="correct" name="correct" value="a" >
 					<input type="hidden" id="iterator" name="iterator" value=<?="\"".$number."\""?> >
-					<div class="btn-action next col-md-1 col-md-offset-1 " id="savediv"> 
+					<div class="btn-action next col-md-1 col-md-offset-10" id="savediv"> 
 						<input type="submit" name="save" id="save" value="SAVE">
 					</div>
 				</div>
@@ -123,6 +136,12 @@ function test_input($data) {
 	    	$("#savediv").css("display","block");
 	    	$("#a,#b,#c,#d").css("color","black");
 	    }
+		$(document).ready(function(){
+		    $(".profile").click(function(){
+		        $("#actions-list").slideToggle('fast','swing');
+		    });
+		});
+
 	});
 </script>
 </body>
