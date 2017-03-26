@@ -1,6 +1,13 @@
 <?
 require "db.php";
 session_start();
+if($_SERVER["REQUEST_METHOD"] == "GET") {
+	if(isset($_GET['logout'])){
+		session_destroy();
+		session_unset();
+		header('Location: index.php');
+	}
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,6 +101,25 @@ session_start();
 		</div>
 </div>
 <script>
+
+var isActive;
+	var penalty = 0;
+	window.onfocus = function () { 
+	  isActive = true; 
+	}; 
+	window.onblur = function () { 
+	  isActive = false; 
+	}; 
+	setInterval(function () { 
+	  console.log(window.isActive ? 'active' : 'inactive'); 
+	  if(!window.isActive){
+			$('.pass-status').text("PENALTY "+(penalty++));
+			$('.pass-status').css("color","red");
+	  }
+	}, 1000);
+
+
+
 $(document).ready(function(){
 	var obj = "span.nl.active";
 	var numb = '1';
@@ -103,7 +129,7 @@ $(document).ready(function(){
         var id = obj.data('id');
         $(this).addClass('active');
     	$.ajax({ type: "GET",  
-                 url: "php/main.php?code=<?=$_SESSION['quiz_code']?>&id=".concat(id),   
+                 url: "php/main.php?code=<?=$_SESSION['code']?>&id=".concat(id),   
                  success : function(text)
                  {
                  	console.log(text);
@@ -124,7 +150,7 @@ $(document).ready(function(){
 		$(obj).addClass('checked');
     	$(obj).removeClass('active');
     	$.ajax({ type: "GET",  
-                 url: "php/main.php?qcode=<?=$_SESSION['quiz_code']?>&penalty=".concat(penalty).concat("&number=").concat(numb).concat("&ans=".concat($(this).attr('id'))),   
+                 url: "php/main.php?qcode=<?=$_SESSION['code']?>&penalty=".concat(penalty).concat("&number=").concat(numb).concat("&ans=".concat($(this).attr('id'))),   
                  success : function(text)
                  {
                  	console.log(text);
@@ -134,11 +160,11 @@ $(document).ready(function(){
 
 	$("#finish").click(function(){
     	$.ajax({ type: "GET",  
-         url: "php/main.php?fcode=<?=$_SESSION['quiz_code']?>&email=<?=$_SESSION['email']?>",   
+         url: "php/main.php?fcode=<?=$_SESSION['code']?>&email=<?=$_SESSION['email']?>",   
          success : function(text)
          {
          	console.log(text);
-         	window.open ('main.php','_self',false); 
+         	window.open ('result.php','_self',false); 
          }
 	    });
 	});
@@ -146,22 +172,7 @@ $(document).ready(function(){
 });
 
 
-
-	var isActive;
-	var penalty = 0;
-	window.onfocus = function () { 
-	  isActive = true; 
-	}; 
-	window.onblur = function () { 
-	  isActive = false; 
-	}; 
-	setInterval(function () { 
-	  console.log(window.isActive ? 'active' : 'inactive'); 
-	  if(!window.isActive){
-			$('.pass-status').text("PENALTY "+(penalty++));
-			$('.pass-status').css("color","red");
-	  }
-	}, 1000);
+	
 
 </script>
 </body>

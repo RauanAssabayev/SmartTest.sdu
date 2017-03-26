@@ -1,47 +1,54 @@
-<?
+<?php
+
 require "db.php";
 session_start();
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-	if(isset($_POST['newtest'])){
-		$sql = "SELECT * from passquiz where 
-		email = '".$_SESSION['email']."' and quiz_code = '".$_POST['quiz-code']."'";
-		$have = R::getAll($sql);
-		if($have){
-			echo "<script> alert('Вы уже сдавали этот тест'); </script>";
-		}else{
-			$sql = "SELECT * from quizes where code = '".$_POST['quiz-code']."'";
-			$quiz = R::getAll($sql);
-			if($quiz){
-				if($quiz[0]['status'] == 1){
-					$_SESSION['code'] = $quiz[0]['code'];
-					$passquiz = R::dispense('passquiz');
-					$passquiz->quiz_code = $_POST['quiz-code'];
-					$passquiz->email = $_SESSION['email'];
-					$passquiz->name = $_SESSION['auth_user'];
-					$passquiz->correct = 0;
-					$passquiz->incorrect = 0;
-					$passquiz->penalty = 0;
-					$passquiz->status = 0;
-					R::store($passquiz);
-					header('Location: quiztime.php');
-				}
-				else{
-					echo '<script> alert("Quiz disabled"); </script>';
-				}
-			}else{
-				echo '<script> alert("CHEKCK CODE"); </script>';
-			}
-		}
-	}
-}
-if($_SERVER["REQUEST_METHOD"] == "GET"){
+
+
+if($_SERVER["REQUEST_METHOD"] == "GET") {
 	if(isset($_GET['logout'])){
 		session_destroy();
 		session_unset();
 		header('Location: index.php');
 	}
 }
+
+
+$sQuery = "select * from (select * from answers order by id desc) as ans where ans.quiz_code = '".$_SESSION['code']."' and email = '".$_SESSION['email']."' group by ans.number";
+	$rows = R::getAll($sQuery);
+
+$query = "select * from quizes where code = '".$_SESSION['code']."'";
+$qu = R::getAll($query);
+
+$passquiz = "select * from passquiz where quiz_code = '".$_SESSION['code']."' 
+and email = '".$_SESSION['email']."'";
+
+$pass = R::getAll($passquiz);
+
+$title = $qu[0]['title'];
+$code = $qu[0]['code'];
+$penalty = $pass[0]['penalty'];
+$correct = 0;
+$incorrect = 0;
+
+$sql = "select * from questions where quiz_code = '".$_SESSION['code']."'";
+$questions = R::getAll($sql);
+
+foreach ($rows as  $row) {
+	if($row['answer'] === $questions[$row['number']-1]['correct']){
+		$correct++;
+	}else{
+		$incorrect++;
+	}
+}
+$sql = "UPDATE passquiz SET correct=".$correct." , incorrect=".$incorrect." 
+ WHERE quiz_code = '".$_SESSION['code']."' and email = '".$_SESSION['email']."'";
+R::exec($sql);
+
+
+
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,16 +84,14 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
 			</div>
 		</div>
 		<div class="col-md-10 col-md-offset-1 block-main">
-			<div class="col-md-4 col-md-offset-4 main-menu">
-				<a href="newtest.php" class="success-btn"> Создать тест </a>
+			<div class="col-md-4 col-md-offset-4 main-menu quizresult" >
+				<span> Имя : <?=$title?> </span>
+				<span> Код : <?=$code?> </span>
+				<span> Правильные : <?=$correct?> </span>
+				<span> Неправильные : <?=$incorrect?> </span>
+				<span> Штраф : <?=$penalty?> секунд </span>
+				<span> В сумме : <?=($correct+$incorrect)?> </span>
 				<br> <br>
-				<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
-					<label>
-						<input type="text" pattern="[A-Za-zА-Яа-яЁё-s]"  name="quiz-code" class="form-control" placeholder="Код">
-					</label>
-					<button type="submit" name="newtest" class="btn btn-primary">Начать тест</button>
-				</form>
-				
 			</div>
 		</div>
 		<div class="footer col-md-12">

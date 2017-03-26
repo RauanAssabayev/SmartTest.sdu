@@ -613,3 +613,27 @@ input:checked + .slider:before {
     font-size: 16px;
     cursor: pointer;
 }
+.quizresult{
+    padding-top: 20px;
+}
+.quizresult>span{
+    display: block;
+    font-size: 18px;
+}
+.fa-info-circle{
+    position: absolute;
+    color: black;
+    right: 10px;
+}
+.qinfo>a:hover{
+    color: black !important;
+    font-size: 20px !important;
+}
+.qinfo,.passinfo>hr{
+    margin:0px;
+    border: 1px solid black;
+}
+.passinfo h3{
+    margin:10px;
+}
+

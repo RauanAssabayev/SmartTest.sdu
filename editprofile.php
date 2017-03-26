@@ -20,6 +20,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		}
 	}
 }
+if($_SERVER["REQUEST_METHOD"] == "GET") {
+	if(isset($_GET['logout'])){
+		session_destroy();
+		session_unset();
+		header('Location: index.php');
+	}
+}
 function test_input($data) {
 	$data = trim($data);
 	$data = stripslashes($data);

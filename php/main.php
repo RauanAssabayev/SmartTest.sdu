@@ -18,11 +18,10 @@ elseif(isset($_GET['code'])){
 	$answers->number = $_GET['number'];
 	$answers->answer = $_GET['ans'];
 	R::store($answers);
-	
 	$sQuery = "UPDATE passquiz SET penalty= ".$_GET['penalty']." WHERE email = '".$_SESSION['email']."' and quiz_code = '".$_GET['qcode']."'";
 	R::exec($sQuery);
-	//echo $sQuery;
-	print json_encode($rows);
+	echo $sQuery;
+	//print json_encode($rows);
 }elseif(isset($_GET['fcode'])){
 	$sQuery = "UPDATE passquiz SET status = 1 WHERE email = '".$_SESSION['email']."' and quiz_code = '".$_GET['fcode']."'";
 	R::exec($sQuery);
