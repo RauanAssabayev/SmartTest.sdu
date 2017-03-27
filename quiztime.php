@@ -102,7 +102,7 @@ if($_SERVER["REQUEST_METHOD"] == "GET") {
 </div>
 <script>
 
-var isActive;
+	var isActive = true;
 	var penalty = 0;
 	window.onfocus = function () { 
 	  isActive = true; 
@@ -128,6 +128,14 @@ $(document).ready(function(){
     	console.log(obj);
         var id = obj.data('id');
         $(this).addClass('active');
+
+
+        $('#a').prop('checked', false);
+        $('#b').prop('checked', false);
+        $('#c').prop('checked', false);
+        $('#d').prop('checked', false);
+
+
     	$.ajax({ type: "GET",  
                  url: "php/main.php?code=<?=$_SESSION['code']?>&id=".concat(id),   
                  success : function(text)
